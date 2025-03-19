@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let products = [
+        {
+          id: 1,
+          name: "mèn mén",
+          price: 20000,
+          quantity: 20,
+          category: "món ăn dân tộc mông",
+        },
+        {
+          id: 2,
+          name: "mứt",
+          price: 80000,
+          quantity: 21,
+          category: "món ăn dân tộc kinh",
+        },
+        {
+          id: 3,
+          name: "cơm lam",
+          price: 40000,
+          quantity: 15,
+          category: "món ăn dân tộc mông",
+        },
+        {
+          id: 4,
+          name: "bánh đậu xanh",
+          price: 60000,
+          quantity: 30,
+          category: "món ăn dân tộc kinh",
+        },
+      ];
+
+      let cart = [];
+
+      // Hiển thị theo danh mục
+      function display() {
+        let inputName = prompt("Nhập vào tên danh mục bạn muốn tìm kiếm");
+        products.forEach((product) => {
+          if (product.category === inputName) {
+            console.log(`
+                ID: ${product.id},
+                Name: ${product.name},
+                Price: ${product.price},
+                Quantity: ${product.quantity},
+                Category: ${product.category},
+                `);
+          }
+        });
+      }
+
+      //Chọn sản phẩm để mua bằng cách nhập id sản phẩm
+      function seachId() {
+        let inputId = +prompt("Nhập vào ID mà bạn muốn tìm kiếm ");
+        let found = products.findIndex((product) => inputId === product.id);
+        if (found !== -1) {
+          let product = products[found];
+          console.log("Sản phẩm có trong cửa hàng");
+          console.log(`
+                ID: ${product.id},
+                Name: ${product.name},
+                Price: ${product.price},
+                Quantity: ${product.quantity},
+                Category: ${product.category},
+                `);
+
+          let buyProduct = +prompt("Số lượng sản phẩm muốn mua");
+          if (buyProduct > 0 && buyProduct <= product.quantity) {
+            console.log(`Bạn đã mua ${buyProduct} sản  phẩm ${product.name}`);
+            product.quantity -= buyProduct;
+
+            let cartIndex = cart.findIndex((item) => item.id === product.id);
+
+            if (cartIndex === -1) {
+              cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: buyProduct,
+              });
+            } else {
+              cart[cartIndex].quantity += buyProduct;
+            }
+
+            console.log("Giỏ hàng hiện tại:");
+            cart.forEach((item, index) => {
+              console.log(`
+                    ${index + 1}. ID: ${item.id}, 
+                    Name: ${item.name}, 
+                    Price: ${item.price}, 
+                    Quantity: ${item.quantity}
+                `);
+            });
+          } else {
+            console.log(`Số lượng không hợp lệ`);
+          }
+        } else {
+          console.log("KHÔNG CÓ SẢN PHẦM");
+        }
+      }
+
+      //sắp xếp
+      function sortProducts(order) {
+        if (order === "tang") {
+          products.sort((a, b) => a.price - b.price);
+          console.log("Danh sách sản phẩm (Giá tăng dần):");
+        } else if (order === "giam") {
+          products.sort((a, b) => b.price - a.price);
+          console.log("Danh sách sản phẩm (Giá giảm dần):");
+        } else {
+          console.log(
+            "Lựa chọn không hợp lệ! Vui lòng nhập 'tang' hoặc 'giam'."
+          );
+          return;
+        }
+
+        products.forEach((product) => {
+          console.log(`
+            ID: ${product.id}
+            Name: ${product.name}
+            Price: ${product.price}
+            Quantity: ${product.quantity}
+            Category: ${product.category}
+        `);
+        });
+      }
+
+      // thanh toán
+      function calculateTotal() {
+        if (cart.length === 0) {
+          console.log("Giỏ hàng đang trống.");
+          return;
+        }
+
+        let total = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+
+        console.log(
+          `Tổng số tiền cần thanh toán: ${total.toLocaleString()} VND`
+        );
+      }
+      do {
+        console.log(`1.Hiển thị các sản phẩm theo tên danh mục`);
+        console.log(`2.Chọn sản phẩm để mua bằng cách nhập id sản phẩm`);
+        console.log(`3.Sắp xếp các sản phẩm trong của hàng theo giá`);
+        console.log(`4.Tính số tiền thanh toán trong giỏ hàng`);
+        console.log(`5.Thoát.`);
+        choice = +prompt("Lụa chọn của bạn");
+        switch (choice) {
+          case 1:
+            display();
+            break;
+          case 2:
+            seachId();
+            break;
+          case 3:
+            let order = prompt(
+              "Bạn muốn sắp xếp giá theo thứ tự tăng hay giảm? (Nhập 'tang' hoặc 'giam')"
+            ).toLowerCase();
+            sortProducts(order);
+            break;
+          case 4:
+            calculateTotal();
+            break;
+          case 5:
+            break;
+        }
+      } while (choice !== 5);
+    </script>
+  </body>
+</html>
